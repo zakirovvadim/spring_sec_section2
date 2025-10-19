@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.password.CompromisedPasswordChecker;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,9 +24,10 @@ public class ProjectSecurityConfig {
 //        http.authorizeHttpRequests((requests) -> requests.anyRequest().permitAll()); разрешит всем
         http.authorizeHttpRequests((requests) -> requests
                 .requestMatchers("/myAccount", "/myBalance", "/myLoans", "/myCards").authenticated()
-                .requestMatchers("/notices", "/contact", "/error").permitAll());
+                .requestMatchers("/notices", "/contact", "/error", "/register").permitAll());
         http.formLogin(withDefaults());
         http.httpBasic(withDefaults());
+        http.csrf(AbstractHttpConfigurer::disable);
         return http.build();
     }
 
@@ -36,10 +38,10 @@ public class ProjectSecurityConfig {
 //        return new InMemoryUserDetailsManager(user, admin);
 //    }
 
-    @Bean
-    public UserDetailsService userDetailsService(DataSource ds) {
-      return new JdbcUserDetailsManager(ds);
-    }
+//    @Bean
+//    public UserDetailsService userDetailsService(DataSource ds) {
+//      return new JdbcUserDetailsManager(ds);
+//    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {

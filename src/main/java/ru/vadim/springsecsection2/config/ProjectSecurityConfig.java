@@ -13,6 +13,7 @@ import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.password.HaveIBeenPwnedRestApiPasswordChecker;
 import org.springframework.security.web.util.matcher.AnyRequestMatcher;
+import ru.vadim.springsecsection2.exceptionhandling.CustomAccessDeniedHandler;
 import ru.vadim.springsecsection2.exceptionhandling.CustomBasicAuthenticationEntryPoint;
 
 import javax.sql.DataSource;
@@ -33,6 +34,7 @@ public class ProjectSecurityConfig {
 //        http.redirectToHttps(https -> https.requestMatchers(AnyRequestMatcher.INSTANCE)); // толкьо HTTP, по новым правилам вообще ничего не указываем
         http.httpBasic(hbc -> hbc.authenticationEntryPoint(new CustomBasicAuthenticationEntryPoint())); // использование кастомного сообщения об ошибке 401 только для httpBasic формы, также есть глобальный метод
         http.csrf(AbstractHttpConfigurer::disable);
+        http.exceptionHandling(ehc -> ehc.accessDeniedHandler(new CustomAccessDeniedHandler()));
         return http.build();
     }
 

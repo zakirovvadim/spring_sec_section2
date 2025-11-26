@@ -27,9 +27,10 @@ public class ProjectSecurityConfig {
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
 //        http.authorizeHttpRequests((requests) -> requests.anyRequest().denyAll()); запретит всех
 //        http.authorizeHttpRequests((requests) -> requests.anyRequest().permitAll()); разрешит всем
+        http.sessionManagement(smc -> smc.invalidSessionUrl("/invalidSession")); // редирект после таймаута сессии (в идеале на спец страницу повторного входа)
         http.authorizeHttpRequests((requests) -> requests
                 .requestMatchers("/myAccount", "/myBalance", "/myLoans", "/myCards").authenticated()
-                .requestMatchers("/notices", "/contact", "/error", "/register").permitAll());
+                .requestMatchers("/notices", "/contact", "/error", "/register", "/invalidSession").permitAll());
         http.formLogin(withDefaults());
 //        http.redirectToHttps(https -> https.requestMatchers(AnyRequestMatcher.INSTANCE)); // толкьо HTTP, по новым правилам вообще ничего не указываем
         http.httpBasic(hbc -> hbc.authenticationEntryPoint(new CustomBasicAuthenticationEntryPoint())); // использование кастомного сообщения об ошибке 401 только для httpBasic формы, также есть глобальный метод
